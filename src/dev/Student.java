@@ -1,6 +1,8 @@
 package dev;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 public class Student {
@@ -122,7 +124,7 @@ public class Student {
                 courses);
 
         for (Course c : courses) {
-            int lecture = random.nextInt(1, c.lectureCount());
+            int lecture = random.nextInt(30, c.lectureCount());
             int year = random.nextInt(student.getYearEnrolled(), maxYear);
             int month = random.nextInt(1, 13);
             if (year == (maxYear - 1)) {
@@ -134,6 +136,8 @@ public class Student {
         }
         return student;
     }
+    
+
 
     @Override
     public String toString() {
