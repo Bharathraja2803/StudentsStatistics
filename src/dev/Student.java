@@ -1,6 +1,7 @@
 package dev;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class Student {
     private final int ageEnrolled;
     private final String gender;
     private final boolean programmingExperience;
+    private final List<Course> courseList;
 
     private final Map<String, CourseEngagement> engagementMap = new HashMap<>();
 
@@ -26,7 +28,7 @@ public class Student {
         this.ageEnrolled = ageEnrolled;
         this.gender = gender;
         this.programmingExperience = programmingExperience;
-
+        this.courseList = new ArrayList(List.of(courses));
         for (Course course : courses) {
             addCourse(course, LocalDate.of(yearEnrolled, 1, 1));
         }
@@ -62,6 +64,14 @@ public class Student {
         return gender;
     }
 
+    public List<String> getCourses(){
+    	List<String> courseTitles = new ArrayList<>();
+    	courseTitles = courseList.stream()
+    			.map(s -> s.courseCode())
+    			.toList();
+    	return List.copyOf(courseTitles);
+    }
+    	
     public boolean hasProgrammingExperience() {
         return programmingExperience;
     }
@@ -69,6 +79,7 @@ public class Student {
     public Map<String, CourseEngagement> getEngagementMap() {
         return Map.copyOf(engagementMap);
     }
+    
 
     public int getYearsSinceEnrolled() {
         return LocalDate.now().getYear() - yearEnrolled;
@@ -114,17 +125,35 @@ public class Student {
     public static Student getRandomStudent(Course... courses) {
 
         int maxYear = LocalDate.now().getYear() + 1;
-
+        int numberOfCourses = random.nextInt(1,courses.length+1);
+        Course[] enrolledCourse = new Course[numberOfCourses];
+        if(numberOfCourses ==courses.length ) {
+        	Arrays.setAll(enrolledCourse, i -> courses[i]);
+        }else {
+        	int indexCounter = 0;
+        	List<Course> randomCourse = new ArrayList<>();
+        	while(indexCounter<numberOfCourses) {
+        		int randomPickCourseIndex = random.nextInt(0,4);
+        		if(randomCourse.contains(courses[randomPickCourseIndex])) {
+        			continue;
+        		}
+        		randomCourse.add(courses[randomPickCourseIndex]);
+        		// 
+        		indexCounter++;
+        	}
+        	Arrays.setAll(enrolledCourse, i -> randomCourse.get(i));
+        }
+        
+        
         Student student = new Student(
                 getRandomVal("AU", "CA", "CN", "GB", "IN", "UA", "US"),
-                random.nextInt(2015, maxYear),
+                random.nextInt(maxYear - 4, maxYear),
                 random.nextInt(18, 90),
                 getRandomVal("M", "F", "U"),
                 random.nextBoolean(),
-                courses);
-
-        for (Course c : courses) {
-            int lecture = random.nextInt(30, c.lectureCount());
+                enrolledCourse);
+        for (Course c : enrolledCourse) {
+            int lecture = random.nextInt(0, c.lectureCount());
             int year = random.nextInt(student.getYearEnrolled(), maxYear);
             int month = random.nextInt(1, 13);
             if (year == (maxYear - 1)) {
@@ -134,6 +163,8 @@ public class Student {
             }
             student.watchLecture(c.courseCode(), lecture, month, year);
         }
+        
+        
         return student;
     }
     
