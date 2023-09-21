@@ -48,15 +48,16 @@ public class MainStreamFinalChallenge {
         
         
         String q1 = "1. How many of the students are enrolled in each class?";
+        System.out.printf("%s%n%s%n%s :%n",q1, "=".repeat(q1.length()),"Answer");
+        System.out.println("My version");
         var courseGroupWiseCount = studentsList.stream()
         		.collect(Collectors.groupingBy(s -> s.getCourses().toString(),Collectors.counting()))
         		
         		;
         
-        System.out.printf("%s%n%s%n%s :%n",q1, "=".repeat(q1.length()),"Answer");
         courseGroupWiseCount.forEach((k,v)-> System.out.println(k+" : "+v));
-        System.out.println("=".repeat(80));
         
+        System.out.println("=".repeat(80));
         for(String cc : courseList) {
         	var courseWiseCount = studentsList.stream()
         			.filter(s -> s.getCourses().contains(cc))
@@ -64,6 +65,18 @@ public class MainStreamFinalChallenge {
 				
         	System.out.println(cc+" : "+ courseWiseCount);
         }
+        System.out.println("=".repeat(80));
+        System.out.println("Bob's version");
+        var courseGroupWiseCount1 = studentsList.stream()
+        		.flatMap(s -> s.getEngagementMap().values().stream())
+        		.collect(Collectors.groupingBy(s -> s.getCourseCode(),Collectors.counting()))
+        		
+        		;
+        
+        courseGroupWiseCount1.forEach((k,v)-> System.out.println(k+" : "+v));
+        
+        System.out.println("=".repeat(80));
+       
         
         
         
